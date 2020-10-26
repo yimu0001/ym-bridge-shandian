@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-10-26 10:20:39
- * @LastEditTime: 2020-10-26 10:46:04
+ * @LastEditTime: 2020-10-26 11:41:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \ym-bridge-shandian\src\assets\api\bridge.js
@@ -10,9 +10,12 @@ import axios from 'axios'
 import Cookies from 'js-cookie';
 
 function getHeaders() {
-  let headers = {}
+  let headers = {
+    platform: 'PC'
+  }
   let jwt = 'jwt-token'
-  headers[jwt] = Cookies.get('jwt_token')? Cookies.get('jwt_token'): ''
+  headers[jwt] = Cookies.get('jwt_token')? Cookies.get('jwt_token'): '';
+  return headers
 }
 
 class HttpRequest {
@@ -23,6 +26,7 @@ class HttpRequest {
     const config = {
       headers: getHeaders()
     }
+    console.log(config)
     return config
   }
   destroy (url) {
@@ -44,16 +48,6 @@ class HttpRequest {
       return { data, status }
     }, error => {
       this.destroy(url)
-      let errorInfo = error.response
-      if (!errorInfo) {
-        const { request: { statusText, status }, config } = JSON.parse(JSON.stringify(error))
-        errorInfo = {
-          statusText,
-          status,
-          request: { responseURL: config.url }
-        }
-      }
-      addErrorLog(errorInfo)
       return Promise.reject(error)
     })
   }
